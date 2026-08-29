@@ -1,0 +1,20 @@
+{
+  "name": "netflix-clone-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "auth-server",
+    "api-server",
+    "client"
+  ],
+  "scripts": {
+    "infra": "docker compose up -d",
+    "auth": "npm run dev -w auth-server",
+    "api": "npm run dev -w api-server",
+    "client": "npm run start -w client",
+    "dev": "npm run infra && concurrently --kill-others-on-fail \"npm run auth\" \"npm run api\" \"npm run client\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
