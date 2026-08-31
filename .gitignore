@@ -44,3 +44,6 @@ pnpm-debug.log*
 # Local Databases/Containers
 /mongodb_data/
 /redis_data/
+
+# Documentation / Internal Plans
+docs/
