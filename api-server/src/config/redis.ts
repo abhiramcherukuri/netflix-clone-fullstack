@@ -1,6 +1,6 @@
-import { createClient } from "redis";
-import { env } from "./env.ts";
-import { logger } from "../utils/logger.ts";
+import { createClient } from 'redis';
+import { env } from './env.ts';
+import { logger } from '../utils/logger.ts';
 
 export type RedisClient = ReturnType<typeof createClient>;
 
@@ -16,8 +16,8 @@ export const connectRedis = async (): Promise<RedisClient> => {
     socket: {
       reconnectStrategy: (retries: number) => {
         if (retries > 10) {
-          logger.error("Redis maximum reconnection attempts exceeded.");
-          return new Error("Redis connection failed");
+          logger.error('Redis maximum reconnection attempts exceeded.');
+          return new Error('Redis connection failed');
         }
         const delay = Math.min(retries * 200, 3000);
         logger.warn(`Reconnecting to Redis in ${delay}ms (attempt ${retries})...`);
@@ -26,20 +26,20 @@ export const connectRedis = async (): Promise<RedisClient> => {
     },
   });
 
-  redisClient.on("connect", () => {
-    logger.info("Redis client connected successfully.");
+  redisClient.on('connect', () => {
+    logger.info('Redis client connected successfully.');
   });
 
-  redisClient.on("ready", () => {
-    logger.info("Redis client ready to accept commands.");
+  redisClient.on('ready', () => {
+    logger.info('Redis client ready to accept commands.');
   });
 
-  redisClient.on("error", (err) => {
-    logger.error("Redis client error:", { error: err.message });
+  redisClient.on('error', (err) => {
+    logger.error('Redis client error:', { error: err.message });
   });
 
-  redisClient.on("end", () => {
-    logger.warn("Redis client connection closed.");
+  redisClient.on('end', () => {
+    logger.warn('Redis client connection closed.');
   });
 
   await redisClient.connect();
@@ -48,7 +48,7 @@ export const connectRedis = async (): Promise<RedisClient> => {
 
 export const getRedisClient = (): RedisClient => {
   if (!redisClient || !redisClient.isOpen) {
-    throw new Error("Redis client is not connected. Call connectRedis() first.");
+    throw new Error('Redis client is not connected. Call connectRedis() first.');
   }
   return redisClient;
 };
@@ -56,11 +56,11 @@ export const getRedisClient = (): RedisClient => {
 export const disconnectRedis = async (): Promise<void> => {
   if (redisClient && redisClient.isOpen) {
     await redisClient.quit();
-    logger.info("Redis connection closed gracefully.");
+    logger.info('Redis connection closed gracefully.');
   }
 };
 
 export const getRedisStatus = (): string => {
-  if (!redisClient) return "disconnected";
-  return redisClient.isOpen ? "connected" : "disconnected";
+  if (!redisClient) return 'disconnected';
+  return redisClient.isOpen ? 'connected' : 'disconnected';
 };

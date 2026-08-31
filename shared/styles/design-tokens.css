@@ -1,21 +1,44 @@
 :root {
-  --color-primary:       #E50914;   --color-primary-hover: #F40612;
-  --color-background:    #141414;   --color-surface:       #1F1F1F;
-  --color-surface-alt:   #2F2F2F;   --color-text:          #FFFFFF;
-  --color-text-muted:    #B3B3B3;   --color-border:        #404040;
-  --color-success:       #46D369;   --color-error:         #E87C03;
+  --color-primary: #e50914;
+  --color-primary-hover: #f40612;
+  --color-background: #141414;
+  --color-surface: #1f1f1f;
+  --color-surface-alt: #2f2f2f;
+  --color-text: #ffffff;
+  --color-text-muted: #b3b3b3;
+  --color-border: #404040;
+  --color-success: #46d369;
+  --color-error: #e87c03;
 
-  --font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-size-xs: 11px;   --font-size-sm: 13px;   --font-size-base: 15px;
-  --font-size-lg: 18px;   --font-size-xl: 24px;   --font-size-2xl: 32px;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 15px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 32px;
   --font-size-hero: 48px;
-  --font-weight-normal: 400; --font-weight-medium: 500;
-  --font-weight-semibold: 600; --font-weight-bold: 700;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
-  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
-  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
 
-  --radius-sm: 4px; --radius-md: 6px; --radius-lg: 10px; --radius-full: 9999px;
-  --input-height: 50px; --input-bg: #333333; --input-radius: 4px;
-  --transition-fast: 150ms ease; --transition-base: 250ms ease;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 9999px;
+  --input-height: 50px;
+  --input-bg: #333333;
+  --input-radius: 4px;
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
 }
