@@ -2,6 +2,7 @@
   "name": "netflix-clone-monorepo",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "auth-server",
     "api-server",
@@ -12,10 +13,25 @@
     "auth": "npm run dev -w auth-server",
     "api": "npm run dev -w api-server",
     "client": "npm run start -w client",
-    "dev": "npm run infra && concurrently --kill-others-on-fail \"npm run auth\" \"npm run api\" \"npm run client\""
+    "dev": "npm run infra && concurrently --kill-others-on-fail \"npm run auth\" \"npm run api\" \"npm run client\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "typecheck:auth": "tsc --noEmit -p auth-server",
+    "typecheck:api": "tsc --noEmit -p api-server",
+    "typecheck:client": "tsc --noEmit -p client/tsconfig.app.json",
+    "typecheck": "npm run typecheck:auth && npm run typecheck:api && npm run typecheck:client",
+    "build:client": "npm run build -w client",
+    "ci": "npm run lint && npm run typecheck && npm run build:client"
   },
   "devDependencies": {
+    "@eslint/js": "^9.20.0",
     "@types/node": "^26.4.0",
-    "concurrently": "^10.0.0"
+    "concurrently": "^10.0.0",
+    "eslint": "^9.20.0",
+    "prettier": "^3.5.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.24.0"
   }
 }
