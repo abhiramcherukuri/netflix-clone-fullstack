@@ -121,10 +121,11 @@ Or run individual services in separate terminals:
 
 ## 🔒 Security Principles
 
-- **OAuth 2.0 PKCE**: Public client protection against authorization code interception.
-- **In-Memory Tokens**: Access tokens never touch `localStorage` or `sessionStorage`.
-- **HTTP-Only Cookies**: Refresh tokens are stored in `httpOnly`, `Secure`, `SameSite=Strict` cookies.
-- **Asymmetric RS256**: Only the Auth Server holds the private key; the API Server validates signatures using the public key via JWKS.
+- **100% HttpOnly Cookies**: Both access and refresh tokens are stored in `httpOnly`, `Secure`, `SameSite=Lax/Strict` cookies — completely immune to XSS token theft.
+- **Double-Submit Anti-CSRF Defense**: All mutating requests are validated with cryptographically verified `X-XSRF-TOKEN` headers.
+- **OAuth 2.0 PKCE**: RFC 7636 public client protection against authorization code interception.
+- **Zero Credential Exposure**: Passwords never touch Angular JavaScript memory or client bundles.
+- **Asymmetric RS256**: Only the Auth Server holds the private key; the API Server validates signatures using the public key via JWKS without database or network round-trips.
 - **Fail-Fast Validation**: Environment variables are strictly validated at boot time via **Zod**.
 
 ---
