@@ -3,6 +3,13 @@
     "target": "ES2024",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "paths": {
+      "#config": ["./src/config/index.ts"],
+      "#middleware": ["./src/middleware/index.ts"],
+      "#utils": ["./src/utils/index.ts"],
+      "#oauth": ["./src/oauth/index.ts"],
+      "#modules/*": ["./src/modules/*/index.ts"]
+    },
     "lib": ["ES2024"],
     "types": ["node"],
     "allowImportingTsExtensions": true,
