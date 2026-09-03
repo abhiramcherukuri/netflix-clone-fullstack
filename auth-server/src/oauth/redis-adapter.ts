@@ -1,6 +1,8 @@
 import type { Adapter, AdapterPayload } from 'oidc-provider';
 import { getRedisClient } from '#config';
 
+export const OIDC_REDIS_NAMESPACE = 'auth:oidc';
+
 /**
  * Redis Storage Adapter for oidc-provider.
  * Namespaces all keys under 'auth:oidc:<model>:<id>' with automated TTL expiration.
@@ -13,7 +15,7 @@ export class RedisAdapter implements Adapter {
   }
 
   private key(id: string): string {
-    return `auth:oidc:${this.name}:${id}`;
+    return `${OIDC_REDIS_NAMESPACE}:${this.name}:${id}`;
   }
 
   /**
@@ -46,7 +48,7 @@ export class RedisAdapter implements Adapter {
    */
   async findByUserCode(userCode: string): Promise<AdapterPayload | undefined> {
     const redis = getRedisClient();
-    const id = await redis.get(`auth:oidc:userCode:${userCode}`);
+    const id = await redis.get(`${OIDC_REDIS_NAMESPACE}:userCode:${userCode}`);
     if (!id) return undefined;
     return this.find(id);
   }
@@ -56,7 +58,7 @@ export class RedisAdapter implements Adapter {
    */
   async findByUid(uid: string): Promise<AdapterPayload | undefined> {
     const redis = getRedisClient();
-    const id = await redis.get(`auth:oidc:uid:${uid}`);
+    const id = await redis.get(`${OIDC_REDIS_NAMESPACE}:uid:${uid}`);
     if (!id) return undefined;
     return this.find(id);
   }
@@ -74,7 +76,7 @@ export class RedisAdapter implements Adapter {
    */
   async revokeByGrantId(grantId: string): Promise<void> {
     const redis = getRedisClient();
-    const pattern = `auth:oidc:*:${grantId}`;
+    const pattern = `${OIDC_REDIS_NAMESPACE}:*:${grantId}`;
     const keys = await redis.keys(pattern);
     if (keys.length > 0) {
       await redis.del(keys);
