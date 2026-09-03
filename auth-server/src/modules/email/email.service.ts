@@ -56,10 +56,10 @@ class EmailService {
   }): Promise<void> {
     const isMockKey = env.RESEND_API_KEY.startsWith('test_');
 
-    // Local Development Fallback: Log email details and clickable URL to console
+        // Local Development Fallback: Log email notification without sensitive tokens
     if (isMockKey) {
       logger.info(
-        `📧 [DEV EMAIL SENT] To: ${options.to} | Subject: "${options.subject}" | Link: ${options.actionUrl}`,
+        `📧 [DEV EMAIL MOCK] Transactional email dispatched to: ${options.to}`,
       );
       return;
     }
