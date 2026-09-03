@@ -4,6 +4,15 @@ import { keystore } from './jwks.ts';
 import { RedisAdapter } from './redis-adapter.ts';
 import { userRepository } from '#modules/users';
 
+export const OIDC_TOKEN_TTL_SECONDS = {
+  ACCESS_TOKEN: 15 * 60, // 15 minutes
+  AUTHORIZATION_CODE: 60, // 60 seconds
+  ID_TOKEN: 15 * 60, // 15 minutes
+  REFRESH_TOKEN: 7 * 24 * 60 * 60, // 7 days
+  INTERACTION: 15 * 60, // 15 minutes
+  SESSION: 7 * 24 * 60 * 60, // 7 days
+} as const;
+
 const configuration: Configuration = {
   // 1. Storage Adapter (Redis)
   adapter: RedisAdapter,
@@ -32,12 +41,12 @@ const configuration: Configuration = {
 
   // 5. Token Lifespans (Aligned with BLUEPRINT1.md)
   ttl: {
-    AccessToken: 15 * 60, // 15 minutes (in seconds)
-    AuthorizationCode: 60, // 60 seconds
-    IdToken: 15 * 60, // 15 minutes
-    RefreshToken: 7 * 24 * 60 * 60, // 7 days
-    Interaction: 15 * 60, // 15 minutes
-    Session: 7 * 24 * 60 * 60, // 7 days
+    AccessToken: OIDC_TOKEN_TTL_SECONDS.ACCESS_TOKEN,
+    AuthorizationCode: OIDC_TOKEN_TTL_SECONDS.AUTHORIZATION_CODE,
+    IdToken: OIDC_TOKEN_TTL_SECONDS.ID_TOKEN,
+    RefreshToken: OIDC_TOKEN_TTL_SECONDS.REFRESH_TOKEN,
+    Interaction: OIDC_TOKEN_TTL_SECONDS.INTERACTION,
+    Session: OIDC_TOKEN_TTL_SECONDS.SESSION,
   },
 
   // 6. Custom Claims in Access Token & ID Token

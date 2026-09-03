@@ -12,8 +12,9 @@ import {
 } from '#config';
 import { logger, NotFoundError } from '#utils';
 import { errorHandler, globalRateLimiter, corsMiddleware, requestLogger } from '#middleware';
-import { usersRouter } from '#modules/users';
 import { oidcProvider, keystore } from '#oauth';
+import { usersRouter } from '#modules/users';
+import { authRouter } from '#modules/auth';
 
 const app = express();
 
@@ -22,10 +23,12 @@ app.use(helmet());
 app.use(corsMiddleware);
 app.use(requestLogger);
 
+const MAX_REQUEST_BODY_SIZE = '1mb';
+
 // 2. Cookie & Body Parsers & Global Rate Limiting
 app.use(cookieParser());
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: false, limit: '1mb' }));
+app.use(express.json({ limit: MAX_REQUEST_BODY_SIZE }));
+app.use(express.urlencoded({ extended: false, limit: MAX_REQUEST_BODY_SIZE }));
 app.use(globalRateLimiter);
 
 // 3. Health Check Endpoint
@@ -46,6 +49,7 @@ app.get('/health', (_req, res) => {
 
 // 4. Feature Routes
 app.use('/api/v1/users', usersRouter);
+app.use('/auth', authRouter);
 
 // 5. OAuth & OIDC Public Endpoints
 app.get('/oauth/jwks', (_req, res) => {

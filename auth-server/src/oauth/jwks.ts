@@ -6,6 +6,13 @@ export interface JWKKey extends crypto.JsonWebKey {
   kid: string;
 }
 
+export const CRYPTO_KEY_CONFIG = {
+  RSA_MODULUS_LENGTH: 2048,
+  KEY_ID_BYTES: 16,
+  SIGNING_ALGORITHM: 'RS256',
+  KEY_USE: 'sig',
+} as const;
+
 /**
  * In-memory RS256 JWKS Keystore.
  * Generates an RSA 2048-bit key pair on boot for JWT signing and verification.
@@ -21,7 +28,7 @@ class Keystore {
   private initializeKeys(): void {
     // Generate an RSA 2048-bit key pair
     this.keyPair = crypto.generateKeyPairSync('rsa', {
-      modulusLength: 2048,
+      modulusLength: CRYPTO_KEY_CONFIG.RSA_MODULUS_LENGTH,
       publicKeyEncoding: {
         type: 'spki',
         format: 'pem',
@@ -38,9 +45,9 @@ class Keystore {
 
     this.jwk = {
       ...jwkObject,
-      use: 'sig',
-      alg: 'RS256',
-      kid: crypto.randomBytes(16).toString('hex'),
+      use: CRYPTO_KEY_CONFIG.KEY_USE,
+      alg: CRYPTO_KEY_CONFIG.SIGNING_ALGORITHM,
+      kid: crypto.randomBytes(CRYPTO_KEY_CONFIG.KEY_ID_BYTES).toString('hex'),
     };
   }
 

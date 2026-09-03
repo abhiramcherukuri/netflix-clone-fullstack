@@ -4,6 +4,7 @@ import type { IUser } from './users.model.ts';
 import type { RegisterUserDto, LoginUserDto, UserResponseDto } from './users.dto.ts';
 import { ConflictError, UnauthorizedError, NotFoundError } from '#utils';
 import { env } from '#config';
+import { emailService, tokenService } from '#modules/email';
 
 /**
  * Helper to sanitize user documents by stripping sensitive fields like passwordHash
@@ -48,7 +49,11 @@ export const userService = {
       role: dto.role,
     });
 
-    // 4. Return sanitized user response
+    // 4. Generate verification token and send verification email
+    const verificationToken = await tokenService.createVerificationToken(newUser._id.toString());
+    await emailService.sendVerificationEmail(newUser.email, newUser.name, verificationToken);
+
+    // 5. Return sanitized user response
     return toUserResponse(newUser);
   },
 

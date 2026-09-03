@@ -62,4 +62,13 @@ export const userRepository = {
       .lean<IUser>()
       .exec();
   },
+
+  /**
+   * Updates user password hash
+   */
+  updatePasswordHash: async (id: string, passwordHash: string): Promise<IUser | null> => {
+    return await UserModel.findByIdAndUpdate(id, { passwordHash }, { new: true })
+      .lean<IUser>()
+      .exec();
+  },
 };
