@@ -8,6 +8,7 @@ const router = Router();
 // 1. Verify email via link sent to inbox
 router.get(
   '/verify-email/:token',
+  authRateLimiter,
   validate(TokenParamSchema, 'params'),
   authController.verifyEmail,
 );
