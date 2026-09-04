@@ -1,8 +1,14 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import express from 'express';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import {
   env,
+  APP_CONFIG,
   connectDatabase,
   disconnectDatabase,
   getDatabaseStatus,
@@ -12,11 +18,18 @@ import {
 } from '#config';
 import { logger, NotFoundError } from '#utils';
 import { errorHandler, globalRateLimiter, corsMiddleware, requestLogger } from '#middleware';
-import { oidcProvider, keystore } from '#oauth';
+import { oidcProvider, keystore, interactionRouter } from '#oauth';
 import { usersRouter } from '#modules/users';
-import { authRouter } from '#modules/auth';
+import { authRouter, authWebRouter } from '#modules/auth';
 
 const app = express();
+
+// 0. Configure EJS View Engine & Static Assets
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use('/shared', express.static(path.join(__dirname, '../../shared')));
+
+app.locals.app = APP_CONFIG;
 
 // 1. Security Headers & CORS
 app.use(helmet());
@@ -47,9 +60,16 @@ app.get('/health', (_req, res) => {
   });
 });
 
+// Root Route: Redirects to the Netflix Client Application
+app.get('/', (_req, res) => {
+  res.redirect(env.AUTH_REDIRECT_URI.replace('/callback', ''));
+});
+
 // 4. Feature Routes
 app.use('/api/v1/users', usersRouter);
-app.use('/auth', authRouter);
+app.use('/api/v1/auth', authRouter); //Pure REST API (100% JSON)
+app.use('/auth', authWebRouter); //Pure Web UI (100% HTML EJS)
+app.use('/interaction', interactionRouter); //OAuth 2.0 PKCE UI
 
 // 5. OAuth & OIDC Public Endpoints
 app.get('/oauth/jwks', (_req, res) => {

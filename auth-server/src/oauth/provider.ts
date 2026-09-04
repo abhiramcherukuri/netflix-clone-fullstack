@@ -11,6 +11,7 @@ export const OIDC_TOKEN_TTL_SECONDS = {
   REFRESH_TOKEN: 7 * 24 * 60 * 60, // 7 days
   INTERACTION: 15 * 60, // 15 minutes
   SESSION: 7 * 24 * 60 * 60, // 7 days
+  GRANT: 14 * 24 * 60 * 60, // 14 days
 } as const;
 
 const configuration: Configuration = {
@@ -20,6 +21,11 @@ const configuration: Configuration = {
   // 2. RS256 Signing Keystore
   jwks: {
     keys: keystore.getSigningKeys(),
+  },
+
+  // Stable Cookie Signing Key from Environment
+  cookies: {
+    keys: [env.AUTH_COOKIE_SECRET],
   },
 
   // 3. Registered OAuth Clients
@@ -47,6 +53,7 @@ const configuration: Configuration = {
     RefreshToken: OIDC_TOKEN_TTL_SECONDS.REFRESH_TOKEN,
     Interaction: OIDC_TOKEN_TTL_SECONDS.INTERACTION,
     Session: OIDC_TOKEN_TTL_SECONDS.SESSION,
+    Grant: OIDC_TOKEN_TTL_SECONDS.GRANT,
   },
 
   // 6. Custom Claims in Access Token & ID Token

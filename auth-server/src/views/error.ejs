@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head', { title: 'Session Error' }) %>
+  </head>
+  <body>
+    <div class="auth-backdrop"></div>
+    <%- include('partials/header') %>
+
+    <main class="auth-container">
+      <div class="auth-card" style="text-align: center;">
+        <h1 class="auth-title" style="color: var(--color-error);">Session Expired</h1>
+
+        <div class="alert-error" style="text-align: left;">
+          <%= locals.message || 'Your authentication session has expired or is invalid. Please return to the application to try again.' %>
+        </div>
+
+        <a href="/" class="btn-primary" style="display: inline-block; text-decoration: none; line-height: var(--input-height);">
+          Return to Sign In
+        </a>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>

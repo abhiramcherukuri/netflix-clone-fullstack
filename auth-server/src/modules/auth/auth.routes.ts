@@ -38,4 +38,24 @@ router.post(
   authController.resetPassword,
 );
 
+// Render Forgot Password EJS View in Browser
+router.get('/forgot-password', (req, res) => {
+  const uid = typeof req.query.uid === 'string' ? req.query.uid : null;
+  res.render('forgot-password', {
+    error: null,
+    message: null,
+    email: '',
+    uid,
+  });
+});
+
+// Render Reset Password EJS View in Browser
+router.get('/reset-password/:token', validate(TokenParamSchema, 'params'), (req, res) => {
+  res.render('reset-password', {
+    token: req.params.token,
+    error: null,
+    message: null,
+  });
+});
+
 export const authRouter = router;

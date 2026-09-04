@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head', { title: 'Sign Up' }) %>
+  </head>
+  <body>
+    <div class="auth-backdrop"></div>
+    <%- include('partials/header') %>
+
+    <main class="auth-container">
+      <div class="auth-card">
+        <h1 class="auth-title">Sign Up</h1>
+
+        <% if (locals.error) { %>
+          <div class="alert-error"><%= error %></div>
+        <% } %>
+
+        <form action="/interaction/<%= uid %>/register" method="POST">
+          <div class="form-group">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-input"
+              placeholder="Your full name"
+              value="<%= locals.name || '' %>"
+              required
+              autocomplete="name"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-input"
+              placeholder="Email address"
+              value="<%= locals.email || '' %>"
+              required
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="Password"
+              required
+              autocomplete="new-password"
+            />
+            <small style="color: var(--color-text-muted); font-size: var(--font-size-xs); display: block; margin-top: var(--space-1); line-height: 1.4;">
+              Must be at least 8 characters, with 1 uppercase, 1 number, and 1 symbol.
+            </small>
+          </div>
+
+          <button type="submit" class="btn-primary">Create Account</button>
+
+          <div class="auth-links" style="margin-top: var(--space-8);">
+            Already have an account? <a href="/interaction/<%= uid %>">Sign in now</a>.
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head', { title: 'Sign In' }) %>
+  </head>
+  <body>
+    <div class="auth-backdrop"></div>
+    <%- include('partials/header') %>
+
+    <main class="auth-container">
+      <div class="auth-card">
+        <h1 class="auth-title">Sign In</h1>
+
+        <% if (locals.error) { %>
+          <div class="alert-error"><%= error %></div>
+        <% } %>
+
+        <% if (locals.success) { %>
+          <div class="alert-success"><%= success %></div>
+        <% } %>
+
+        <form action="/interaction/<%= uid %>/login" method="POST">
+          <div class="form-group">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-input"
+              placeholder="Email address"
+              value="<%= locals.email || '' %>"
+              required
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="Password"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+
+          <button type="submit" class="btn-primary">Sign In</button>
+
+          <div class="auth-links" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-4);">
+            <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
+              <input type="checkbox" name="remember" style="accent-color: var(--color-primary);" />
+              <span>Remember me</span>
+            </label>
+            <a href="/auth/forgot-password?uid=<%= uid %>" style="font-size: var(--font-size-xs);">Need help?</a>
+          </div>
+
+          <div class="auth-links" style="margin-top: var(--space-8);">
+            New to Netflix? <a href="/interaction/<%= uid %>/register">Sign up now</a>.
+          </div>
+
+          <p style="margin-top: var(--space-4); font-size: var(--font-size-xs); color: var(--color-text-muted); line-height: 1.4;">
+            This page is protected by Google reCAPTCHA to ensure you're not a bot.
+          </p>
+        </form>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
