@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { Resend } from 'resend';
 import { env } from '#config';
 import { logger } from '#utils';
-import { EMAIL_SUBJECTS } from './email.constants.ts';
+import { EMAIL_SUBJECTS, EMAIL_TEMPLATES } from './email.constants.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -81,7 +81,7 @@ class EmailService {
    */
   async sendVerificationEmail(to: string, name: string, token: string): Promise<void> {
     const actionUrl = `${env.AUTH_OIDC_ISSUER}/auth/verify-email/${token}`;
-    const rawTemplate = await this.loadTemplate('verify-email');
+    const rawTemplate = await this.loadTemplate(EMAIL_TEMPLATES.VERIFY_EMAIL);
     const html = this.compileTemplate(rawTemplate, { name, actionUrl });
 
     await this.sendEmail({
@@ -97,7 +97,7 @@ class EmailService {
    */
   async sendPasswordResetEmail(to: string, name: string, token: string): Promise<void> {
     const actionUrl = `${env.AUTH_OIDC_ISSUER}/auth/reset-password/${token}`;
-    const rawTemplate = await this.loadTemplate('password-reset');
+    const rawTemplate = await this.loadTemplate(EMAIL_TEMPLATES.PASSWORD_RESET);
     const html = this.compileTemplate(rawTemplate, { name, actionUrl });
 
     await this.sendEmail({

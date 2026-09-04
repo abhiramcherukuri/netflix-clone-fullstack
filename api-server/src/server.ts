@@ -29,8 +29,11 @@ app.use(
 );
 
 // 2. Request Body Parsers & Global Rate Limiting
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: false, limit: '1mb' }));
+const MAX_REQUEST_BODY_SIZE = '1mb';
+const SHUTDOWN_TIMEOUT_MS = 10_000;
+
+app.use(express.json({ limit: MAX_REQUEST_BODY_SIZE }));
+app.use(express.urlencoded({ extended: false, limit: MAX_REQUEST_BODY_SIZE }));
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -85,19 +88,21 @@ const bootstrap = async () => {
     });
 
     // Graceful Shutdown Logic
+
     const shutdown = async (signal: string) => {
       logger.info(`Received ${signal}. Shutting down API Server gracefully...`);
+      server.closeIdleConnections?.();
       server.close(async () => {
         await Promise.all([disconnectDatabase(), disconnectRedis()]);
         logger.info('API Server connections closed. Exiting process.');
         process.exit(0);
       });
 
-      // Force exit after 10 seconds if graceful shutdown hangs
+      // Force exit after timeout if graceful shutdown hangs
       setTimeout(() => {
         logger.error('Forced termination due to shutdown timeout.');
         process.exit(1);
-      }, 10000).unref();
+      }, SHUTDOWN_TIMEOUT_MS).unref();
     };
 
     process.on('SIGINT', () => shutdown('SIGINT'));

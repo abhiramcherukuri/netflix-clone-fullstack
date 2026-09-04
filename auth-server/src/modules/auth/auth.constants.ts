@@ -7,4 +7,8 @@ export const AUTH_MESSAGES = {
   PASSWORD_RESET_SUCCESS:
     'Password has been reset successfully. You can now log in with your new password.',
   INVALID_OR_EXPIRED_TOKEN: 'Invalid or expired token link.',
+  USER_NOT_FOUND: 'User account associated with this token was not found.',
+  PASSWORD_RESET_FAILED: 'Failed to reset password. Please try again.',
+  FORGOT_PASSWORD_FAILED: 'Failed to request reset. Please try again.',
+  EMAIL_VERIFICATION_FAILED: 'Email verification failed or token expired.',
 } as const;

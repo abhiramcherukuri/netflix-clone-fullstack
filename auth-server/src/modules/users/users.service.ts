@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { userRepository } from './users.repository.ts';
 import type { IUser } from './users.model.ts';
 import type { RegisterUserDto, LoginUserDto, UserResponseDto } from './users.dto.ts';
+import { USER_MESSAGES } from './users.constants.ts';
 import { ConflictError, UnauthorizedError, NotFoundError } from '#utils';
 import { env } from '#config';
 import { emailService, tokenService } from '#modules/email';
@@ -34,7 +35,7 @@ export const userService = {
     // 1. Check if email is already registered
     const existingUser = await userRepository.findByEmail(dto.email);
     if (existingUser) {
-      throw new ConflictError('An account with this email already exists');
+      throw new ConflictError(USER_MESSAGES.EMAIL_ALREADY_EXISTS);
     }
 
     // 2. Salt and hash password (cost factor: 12)
@@ -65,13 +66,13 @@ export const userService = {
     const user = await userRepository.findByEmail(dto.email);
     if (!user) {
       // Intentionally generic message to prevent account enumeration attacks
-      throw new UnauthorizedError('Invalid email or password');
+      throw new UnauthorizedError(USER_MESSAGES.INVALID_CREDENTIALS);
     }
 
     // 2. Constant-time password comparison
     const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!isPasswordValid) {
-      throw new UnauthorizedError('Invalid email or password');
+      throw new UnauthorizedError(USER_MESSAGES.INVALID_CREDENTIALS);
     }
 
     // Return the verified user entity for session/token generation
@@ -84,7 +85,7 @@ export const userService = {
   getById: async (id: string): Promise<UserResponseDto> => {
     const user = await userRepository.findById(id);
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError(USER_MESSAGES.USER_NOT_FOUND);
     }
     return toUserResponse(user);
   },

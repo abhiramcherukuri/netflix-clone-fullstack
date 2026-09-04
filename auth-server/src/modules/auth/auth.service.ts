@@ -19,7 +19,7 @@ class AuthService {
 
     const updatedUser = await userRepository.updateVerificationStatus(userId, true);
     if (!updatedUser) {
-      throw new BadRequestError('User account associated with this token was not found.');
+      throw new BadRequestError(AUTH_MESSAGES.USER_NOT_FOUND);
     }
 
     return { message: AUTH_MESSAGES.EMAIL_VERIFIED_SUCCESS };
@@ -57,7 +57,7 @@ class AuthService {
 
     const updatedUser = await userRepository.updatePasswordHash(userId, passwordHash);
     if (!updatedUser) {
-      throw new BadRequestError('User account associated with this token was not found.');
+      throw new BadRequestError(AUTH_MESSAGES.USER_NOT_FOUND);
     }
 
     return { message: AUTH_MESSAGES.PASSWORD_RESET_SUCCESS };
