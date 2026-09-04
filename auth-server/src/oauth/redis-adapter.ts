@@ -20,6 +20,7 @@ export class RedisAdapter implements Adapter {
 
   /**
    * Upserts a session, grant, or token record with automatic TTL expiration
+   * and maintains secondary indexes for 'uid' and 'userCode'.
    */
   async upsert(id: string, payload: AdapterPayload, expiresIn: number): Promise<void> {
     const redis = getRedisClient();
@@ -30,6 +31,26 @@ export class RedisAdapter implements Adapter {
       await redis.set(key, serialized, { EX: expiresIn });
     } else {
       await redis.set(key, serialized);
+    }
+
+    // 1. Secondary Index for Session 'uid' (Required by findByUid)
+    if (payload.uid) {
+      const uidKey = `${OIDC_REDIS_NAMESPACE}:uid:${payload.uid}`;
+      if (expiresIn) {
+        await redis.set(uidKey, id, { EX: expiresIn });
+      } else {
+        await redis.set(uidKey, id);
+      }
+    }
+
+    // 2. Secondary Index for Device Authorization 'userCode'
+    if (payload.userCode) {
+      const userCodeKey = `${OIDC_REDIS_NAMESPACE}:userCode:${payload.userCode}`;
+      if (expiresIn) {
+        await redis.set(userCodeKey, id, { EX: expiresIn });
+      } else {
+        await redis.set(userCodeKey, id);
+      }
     }
   }
 
@@ -68,7 +89,22 @@ export class RedisAdapter implements Adapter {
    */
   async destroy(id: string): Promise<void> {
     const redis = getRedisClient();
-    await redis.del(this.key(id));
+    const key = this.key(id);
+    const data = await redis.get(key);
+    if (data) {
+      try {
+        const payload = JSON.parse(data) as AdapterPayload;
+        if (payload.uid) {
+          await redis.del(`${OIDC_REDIS_NAMESPACE}:uid:${payload.uid}`);
+        }
+        if (payload.userCode) {
+          await redis.del(`${OIDC_REDIS_NAMESPACE}:userCode:${payload.userCode}`);
+        }
+      } catch {
+        // Ignore JSON parse errors on cleanup
+      }
+    }
+    await redis.del(key);
   }
 
   /**

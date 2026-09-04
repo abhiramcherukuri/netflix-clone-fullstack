@@ -3,7 +3,7 @@ import { authService } from './auth.service.ts';
 
 export const authController = {
   /**
-   * GET /auth/verify-email/:token
+   * GET /api/v1/auth/verify-email/:token
    */
   verifyEmail: async (req: Request, res: Response): Promise<void> => {
     const token = Array.isArray(req.params.token) ? req.params.token[0] : req.params.token;
@@ -16,7 +16,7 @@ export const authController = {
   },
 
   /**
-   * POST /auth/forgot-password
+   * POST /api/v1/auth/forgot-password
    */
   forgotPassword: async (req: Request, res: Response): Promise<void> => {
     const result = await authService.forgotPassword(req.body);
@@ -28,7 +28,7 @@ export const authController = {
   },
 
   /**
-   * POST /auth/reset-password/:token
+   * POST /api/v1/auth/reset-password/:token
    */
   resetPassword: async (req: Request, res: Response): Promise<void> => {
     const token = Array.isArray(req.params.token) ? req.params.token[0] : req.params.token;
@@ -41,7 +41,7 @@ export const authController = {
   },
 
   /**
-   * POST /auth/resend-verification
+   * POST /api/v1/auth/resend-verification
    */
   resendVerification: async (req: Request, res: Response): Promise<void> => {
     const result = await authService.resendVerification(req.body);

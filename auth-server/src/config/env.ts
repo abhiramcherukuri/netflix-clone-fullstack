@@ -9,6 +9,7 @@ const envSchema = z.object({
   AUTH_OIDC_ISSUER: z.string().url().default('http://localhost:3001'),
   AUTH_CLIENT_ID: z.string().default('netflix-web'),
   AUTH_REDIRECT_URI: z.string().url().default('http://localhost:4200/callback'),
+  AUTH_COOKIE_SECRET: z.string().min(32, 'Cookie secret must be at least 32 characters long'),
   RESEND_API_KEY: z.string().default('test_resend_api_key'),
   EMAIL_FROM: z.string().default('onboarding@resend.dev'),
 });
