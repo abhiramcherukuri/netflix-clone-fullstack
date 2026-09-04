@@ -1,4 +1,12 @@
 import { Schema, model, type Types } from 'mongoose';
+import {
+  USER_ROLES,
+  SUBSCRIPTION_PLANS,
+  SUBSCRIPTION_STATUS,
+  type UserRole,
+  type SubscriptionPlan,
+  type SubscriptionStatus,
+} from './users.constants.ts';
 
 // 1. TypeScript Interface for the User Document
 export interface IUser {
@@ -6,11 +14,11 @@ export interface IUser {
   name: string;
   email: string;
   passwordHash: string;
-  role: 'user' | 'admin';
+  role: UserRole;
   isVerified: boolean;
   subscription: {
-    plan: 'none' | 'basic' | 'standard' | 'premium';
-    status: 'active' | 'inactive' | 'cancelled';
+    plan: SubscriptionPlan;
+    status: SubscriptionStatus;
     startDate: Date;
     endDate?: Date;
     stripeId?: string;
@@ -25,13 +33,13 @@ const subscriptionSchema = new Schema(
   {
     plan: {
       type: String,
-      enum: ['none', 'basic', 'standard', 'premium'],
-      default: 'none',
+      enum: Object.values(SUBSCRIPTION_PLANS),
+      default: SUBSCRIPTION_PLANS.NONE,
     },
     status: {
       type: String,
-      enum: ['active', 'inactive', 'cancelled'],
-      default: 'inactive',
+      enum: Object.values(SUBSCRIPTION_STATUS),
+      default: SUBSCRIPTION_STATUS.INACTIVE,
     },
     startDate: {
       type: Date,
@@ -68,8 +76,8 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
+      enum: Object.values(USER_ROLES),
+      default: USER_ROLES.USER,
       index: true,
     },
     isVerified: {
@@ -79,8 +87,8 @@ const userSchema = new Schema<IUser>(
     subscription: {
       type: subscriptionSchema,
       default: () => ({
-        plan: 'none',
-        status: 'inactive',
+        plan: SUBSCRIPTION_PLANS.NONE,
+        status: SUBSCRIPTION_STATUS.INACTIVE,
       }),
     },
     profiles: [

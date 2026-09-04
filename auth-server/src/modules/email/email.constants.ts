@@ -1,6 +1,13 @@
+import { APP_CONFIG } from '#config';
+
 export const EMAIL_SUBJECTS = {
-  VERIFY_EMAIL: 'Verify your Netflix email address',
-  PASSWORD_RESET: 'Reset your Netflix password',
+  VERIFY_EMAIL: `Verify your ${APP_CONFIG.APP_TITLE_SUFFIX} email address`,
+  PASSWORD_RESET: `Reset your ${APP_CONFIG.APP_TITLE_SUFFIX} password`,
+} as const;
+
+export const EMAIL_TEMPLATES = {
+  VERIFY_EMAIL: 'verify-email',
+  PASSWORD_RESET: 'password-reset',
 } as const;
 
 export const EMAIL_TOKEN_EXPIRIES_SECONDS = {

@@ -4,3 +4,4 @@ export * from './users.repository.ts';
 export * from './users.service.ts';
 export * from './users.controller.ts';
 export * from './users.routes.ts';
+export * from './users.constants.ts';

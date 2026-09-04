@@ -1,4 +1,10 @@
 import { z } from 'zod';
+import {
+  USER_ROLES,
+  type UserRole,
+  type SubscriptionPlan,
+  type SubscriptionStatus,
+} from './users.constants.ts';
 
 // 1. Schema for User Registration
 export const RegisterUserSchema = z.object({
@@ -19,7 +25,7 @@ export const RegisterUserSchema = z.object({
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[0-9]/, 'Password must contain at least one number')
     .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
-  role: z.enum(['user', 'admin']).default('user'),
+  role: z.enum([USER_ROLES.USER, USER_ROLES.ADMIN]).default(USER_ROLES.USER),
 });
 
 // 2. Schema for User Login
@@ -43,11 +49,11 @@ export interface UserResponseDto {
   id: string;
   name: string;
   email: string;
-  role: 'user' | 'admin';
+  role: UserRole;
   isVerified: boolean;
   subscription: {
-    plan: 'none' | 'basic' | 'standard' | 'premium';
-    status: 'inactive' | 'active' | 'cancelled';
+    plan: SubscriptionPlan;
+    status: SubscriptionStatus;
     startDate?: Date;
     endDate?: Date;
   };

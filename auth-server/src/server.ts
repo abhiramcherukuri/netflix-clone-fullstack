@@ -37,6 +37,7 @@ app.use(corsMiddleware);
 app.use(requestLogger);
 
 const MAX_REQUEST_BODY_SIZE = '1mb';
+const SHUTDOWN_TIMEOUT_MS = 10_000;
 
 // 2. Cookie & Body Parsers & Global Rate Limiting
 app.use(cookieParser());
@@ -101,17 +102,18 @@ const bootstrap = async () => {
     // Graceful Shutdown Logic
     const shutdown = async (signal: string) => {
       logger.info(`Received ${signal}. Shutting down Auth Server gracefully...`);
+      server.closeIdleConnections?.();
       server.close(async () => {
         await Promise.all([disconnectDatabase(), disconnectRedis()]);
         logger.info('Auth Server connections closed. Exiting process.');
         process.exit(0);
       });
 
-      // Force exit after 10 seconds if graceful shutdown hangs
+      // Force exit after timeout if graceful shutdown hangs
       setTimeout(() => {
         logger.error('Forced termination due to shutdown timeout.');
         process.exit(1);
-      }, 10000).unref();
+      }, SHUTDOWN_TIMEOUT_MS).unref();
     };
 
     process.on('SIGINT', () => shutdown('SIGINT'));

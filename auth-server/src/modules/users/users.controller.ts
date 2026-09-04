@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { userService } from './users.service.ts';
+import { USER_MESSAGES } from './users.constants.ts';
 import { setAuthCookies } from '#utils';
 
 export const usersController = {
@@ -12,7 +13,7 @@ export const usersController = {
 
     res.status(201).json({
       success: true,
-      message: 'User registered successfully',
+      message: USER_MESSAGES.REGISTER_SUCCESS,
       data: newUser,
     });
   },
@@ -26,7 +27,7 @@ export const usersController = {
 
     res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: USER_MESSAGES.LOGIN_SUCCESS,
       data: {
         id: user._id.toString(),
         name: user.name,

@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import { oidcProvider } from './provider.ts';
-import { userService } from '#modules/users';
+import { OIDC_ERRORS, OIDC_MESSAGES } from './oauth.constants.ts';
+import { userService, USER_ROLES } from '#modules/users';
 import { logger } from '#utils';
 
 const router = Router();
@@ -60,13 +61,12 @@ router.get('/:uid', async (req: Request, res: Response): Promise<void> => {
 
     // Fallback: render error for unhandled prompt
     res.render('error', {
-      message: `Unhandled interaction prompt: ${prompt.name}`,
+      message: `${OIDC_ERRORS.UNHANDLED_PROMPT_PREFIX}${prompt.name}`,
     });
   } catch (error) {
     logger.error('Failed to process OIDC interaction:', { error });
     res.status(500).render('error', {
-      message:
-        'Your authentication session has expired or is invalid. Please start over from the application.',
+      message: OIDC_MESSAGES.SESSION_EXPIRED,
     });
   }
 });
@@ -93,9 +93,10 @@ router.post(
         // Authentication failed: re-render login with friendly error message
         res.status(401).render('login', {
           uid,
-          error: 'Invalid email or password. Please try again.',
+          error: OIDC_MESSAGES.INVALID_CREDENTIALS,
           email,
         });
+
         return;
       }
 
@@ -141,9 +142,9 @@ router.post(
 
       let newUser;
       try {
-        newUser = await userService.register({ name, email, password, role: 'user' });
+        newUser = await userService.register({ name, email, password, role: USER_ROLES.USER });
       } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'Registration failed';
+        const errorMessage = err instanceof Error ? err.message : OIDC_MESSAGES.REGISTRATION_FAILED;
         res.status(400).render('register', {
           uid,
           error: errorMessage,
@@ -178,8 +179,8 @@ router.get(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const result = {
-        error: 'access_denied',
-        error_description: 'End-user aborted interaction',
+        error: OIDC_ERRORS.ACCESS_DENIED,
+        error_description: OIDC_ERRORS.USER_ABORTED,
       };
 
       await oidcProvider.interactionFinished(req, res, result, {

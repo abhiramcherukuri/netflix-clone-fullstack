@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { authService } from './auth.service.ts';
+import { AUTH_MESSAGES } from './auth.constants.ts';
 
 export const authWebController = {
   /**
@@ -29,7 +30,7 @@ export const authWebController = {
       });
     } catch (error) {
       res.status(400).render('forgot-password', {
-        error: error instanceof Error ? error.message : 'Failed to request reset',
+        error: error instanceof Error ? error.message : AUTH_MESSAGES.FORGOT_PASSWORD_FAILED,
         message: null,
         email: req.body.email || '',
         uid: req.query.uid || null,
@@ -63,7 +64,7 @@ export const authWebController = {
     } catch (error) {
       res.status(400).render('reset-password', {
         token,
-        error: error instanceof Error ? error.message : 'Failed to reset password',
+        error: error instanceof Error ? error.message : AUTH_MESSAGES.PASSWORD_RESET_FAILED,
         message: null,
       });
     }
@@ -85,8 +86,7 @@ export const authWebController = {
     } catch (error) {
       res.render('login', {
         uid: '',
-        error:
-          error instanceof Error ? error.message : 'Email verification failed or token expired',
+        error: error instanceof Error ? error.message : AUTH_MESSAGES.EMAIL_VERIFICATION_FAILED,
         success: null,
         email: '',
       });
